@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -10,7 +12,9 @@ import java.util.Collection;
 import java.util.HashMap;
 
 @Slf4j
-@Service
+@Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserService {
     private final HashMap<Integer, User> users = new HashMap<>();
     private static int userId = 0;

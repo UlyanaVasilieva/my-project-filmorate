@@ -53,8 +53,8 @@ public class FilmControllerTest {
         testFilm.setName("");
 
         mockMvc.perform(post("/films")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(testFilm))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(testFilm))
             )
             .andExpect(status().isBadRequest());
     }
