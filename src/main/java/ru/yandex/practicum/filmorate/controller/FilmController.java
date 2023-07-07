@@ -17,13 +17,13 @@ public class FilmController {
     private final HashMap<Integer, Film> films = new HashMap<>();
     private static int filmId = 0;
 
-    @GetMapping()
+    @GetMapping
     public Collection<Film> getAllFilms() {
         log.info("Получен список всех фильмов.");
         return films.values();
     }
 
-    @PostMapping()
+    @PostMapping
     public Film createNewFilm(@Valid @RequestBody Film film) {
         if (films.containsValue(film)) {
             throw new FilmValidationException("Фильм " + film.getName() + " уже добавлен.");
@@ -37,7 +37,7 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping()
+    @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         if (films.containsKey(film.getId())) {
             validateFilmData(film);
