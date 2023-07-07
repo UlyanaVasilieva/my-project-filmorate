@@ -44,3 +44,12 @@ build/
 
 *.db
 db/*
+
+.DS_Store
+src/.DS_Store
+src/main/.DS_Store
+src/main/java/.DS_Store
+src/main/java/ru/.DS_Store
+src/main/java/ru/yandex/.DS_Store
+src/main/java/ru/yandex/practicum/.DS_Store
+src/main/java/ru/yandex/practicum/filmorate/.DS_Store
