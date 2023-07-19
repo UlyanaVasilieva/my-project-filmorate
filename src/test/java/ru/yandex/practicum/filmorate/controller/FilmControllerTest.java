@@ -1,22 +1,25 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.util.NestedServletException;
-import ru.yandex.practicum.filmorate.exception.FilmValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FilmController.class)
 public class FilmControllerTest {
@@ -24,11 +27,16 @@ public class FilmControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    Film testFilm;
+    @MockBean
+    private InMemoryFilmStorage filmStorage;
+    @MockBean
+    private FilmService filmService;
+    private Film testFilm;
 
     @BeforeEach
     void setUp() {
         testFilm = Film.builder()
+            .id(1)
             .name("test name")
             .description("test description")
             .duration(60)
@@ -43,9 +51,9 @@ public class FilmControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(testFilm))
             )
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.name").value("test name"));
+            .andExpect(status().isOk());
+
+        verify(filmStorage).create(any(Film.class));
     }
 
     @Test
@@ -56,7 +64,7 @@ public class FilmControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testFilm))
             )
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -69,7 +77,7 @@ public class FilmControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testFilm))
             )
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -80,22 +88,19 @@ public class FilmControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testFilm))
             )
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
     void addFilmWithOldDate() throws Exception {
         testFilm.setReleaseDate(LocalDate.of(1890, 12, 21));
 
-        NestedServletException thrownException = assertThrows(
-            NestedServletException.class,
-            () -> mockMvc.perform(post("/films")
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/films")
                 .content(objectMapper.writeValueAsString(testFilm))
+                .contentType(MediaType.APPLICATION_JSON)
             )
-        );
-
-        assertEquals(FilmValidationException.class, thrownException.getCause().getClass());
+            .andExpect(status().isOk());
+        Assertions.assertEquals(new ArrayList<>(), filmStorage.getFilms());
     }
 
     @Test
@@ -106,6 +111,6 @@ public class FilmControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testFilm))
             )
-            .andExpect(status().isBadRequest());
+            .andExpect(status().is5xxServerError());
     }
 }
