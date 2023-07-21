@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,8 +26,6 @@ public class FilmControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @MockBean
-    private InMemoryFilmStorage filmStorage;
     @MockBean
     private FilmService filmService;
     private Film testFilm;
@@ -53,7 +50,7 @@ public class FilmControllerTest {
             )
             .andExpect(status().isOk());
 
-        verify(filmStorage).create(any(Film.class));
+        verify(filmService).create(any(Film.class));
     }
 
     @Test
@@ -100,7 +97,7 @@ public class FilmControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk());
-        Assertions.assertEquals(new ArrayList<>(), filmStorage.getFilms());
+        Assertions.assertEquals(new ArrayList<>(), filmService.getFilms());
     }
 
     @Test

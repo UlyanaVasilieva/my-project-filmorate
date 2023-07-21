@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,10 +16,30 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final static int DEFAULT_COUNT_VALUE = 10;
+    private final FilmValidator validator;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(FilmStorage filmStorage, FilmValidator validator) {
         this.filmStorage = filmStorage;
+        this.validator = validator;
+    }
+
+    public Film create(Film film) {
+        validator.validateFilmData(film);
+        return filmStorage.create(film);
+    }
+
+    public Film update(Film film) {
+        validator.validateFilmData(film);
+        return filmStorage.update(film);
+    }
+
+    public Collection<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    public Film getFilmById(int id) {
+        return filmStorage.getFilmById(id);
     }
 
     public Film addLike(Integer filmId, Long userId) {

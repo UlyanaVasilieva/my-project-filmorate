@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 
@@ -34,8 +33,6 @@ public class UserControllerTest {
     private UserController userController;
     @MockBean
     private UserService userService;
-    @MockBean
-    private UserStorage userStorage;
 
     @BeforeEach
     void setUp() {
@@ -65,7 +62,7 @@ public class UserControllerTest {
             )
             .andExpect(status().isOk());
 
-        verify(userStorage).create(any(User.class));
+        verify(userService).create(any(User.class));
     }
 
     @Test
@@ -80,7 +77,7 @@ public class UserControllerTest {
             )
             .andExpect(status().isOk());
 
-        verify(userStorage).create(any(User.class));
+        verify(userService).create(any(User.class));
     }
 
     @Test
@@ -93,7 +90,7 @@ public class UserControllerTest {
             )
             .andExpect(status().isOk());
 
-        verify(userStorage).create(testUser);
+        verify(userService).create(testUser);
     }
 
     @Test
@@ -130,7 +127,7 @@ public class UserControllerTest {
             )
             .andExpect(status().isOk());
 
-        verify(userStorage).create(testUser);
+        verify(userService).create(testUser);
     }
 
     @Test

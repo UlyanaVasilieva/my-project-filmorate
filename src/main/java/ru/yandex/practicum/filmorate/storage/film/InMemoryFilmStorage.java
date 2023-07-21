@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.FilmValidationException;
@@ -12,13 +10,10 @@ import java.util.Collection;
 import java.util.HashMap;
 
 @Component
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Integer, Film> films = new HashMap<>();
     private static int filmId = 0;
-    @Autowired
-    private FilmValidator validator;
 
     @Override
     public Collection<Film> getFilms() {
@@ -31,7 +26,6 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new FilmValidationException("Фильм " + film.getName() + " уже добавлен.");
         }
 
-        validator.validateFilmData(film);
         film.setId(++filmId);
         films.put(film.getId(), film);
 
@@ -41,7 +35,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         if (films.containsKey(film.getId())) {
-            validator.validateFilmData(film);
             films.put(film.getId(), film);
         } else {
             throw new FilmNotFoundException("Фильм не найден.");

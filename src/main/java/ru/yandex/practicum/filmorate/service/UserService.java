@@ -6,16 +6,32 @@ import ru.yandex.practicum.filmorate.exception.UserValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
+    private final UserValidator validator;
+
+    public User create(User user) {
+        validator.validateUserData(user);
+        return userStorage.create(user);
+    }
+
+    public User update(User user) {
+        validator.validateUserData(user);
+        return userStorage.update(user);
+    }
+
+    public Collection<User> getUsers() {
+        return userStorage.getUsers();
+    }
+
+    public User getUserById(Long id) {
+        return userStorage.getUserById(id);
+    }
 
     public User addFriend(Long userId, Long friendId) {
         if (friendId <= 0) {
