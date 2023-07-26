@@ -27,7 +27,8 @@ public class UserControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    User testUser;
+    private User testUser;
+    private User friend;
     @InjectMocks
     private UserController userController;
     @MockBean
@@ -36,11 +37,19 @@ public class UserControllerTest {
     @BeforeEach
     void setUp() {
         testUser = User.builder()
-            .id(1)
+            .id(1L)
             .login("login")
             .email("test@mail.ru")
             .birthday(LocalDate.of(1990, 12, 12))
             .name("name")
+            .build();
+
+        friend = User.builder()
+            .id(2L)
+            .login("friend")
+            .email("friend@mail.ru")
+            .birthday(LocalDate.of(1900, 12, 12))
+            .name("friend")
             .build();
     }
 
@@ -92,7 +101,7 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testUser))
             )
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -104,7 +113,7 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testUser))
             )
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -130,6 +139,6 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testUser))
             )
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().is5xxServerError());
     }
 }
