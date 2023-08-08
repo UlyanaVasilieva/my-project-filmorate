@@ -12,4 +12,10 @@ public interface FilmStorage {
     Collection<Film> getFilms();
 
     Film getFilmById(int id);
+
+    boolean delete(Integer id);
+
+    Film addLike(Integer filmId, Long userId);
+
+    Film removeLike(Integer filmId, Long userId);
 }

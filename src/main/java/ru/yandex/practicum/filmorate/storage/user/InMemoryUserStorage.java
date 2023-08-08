@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 @Component
+@Qualifier("inMemoryUserStorage")
 @RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
     private final HashMap<Long, User> users = new HashMap<>();
@@ -50,5 +52,15 @@ public class InMemoryUserStorage implements UserStorage {
         }
 
         return users.get(id);
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (!users.containsKey(id)) {
+            throw new UserNotFoundException("Пользователь с id " + id + " не найден.");
+        }
+
+        users.remove(id);
+        return true;
     }
 }

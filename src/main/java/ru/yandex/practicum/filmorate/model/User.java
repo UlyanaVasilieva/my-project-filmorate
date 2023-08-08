@@ -5,18 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class User {
+    @Positive
     private Long id;
     @Email
     @NotNull
@@ -27,5 +27,19 @@ public class User {
     private String name;
     @Past
     private LocalDate birthday;
-    private Set<Long> friends;
+    private List<Friendship> friendships;
+
+    public Map<String, Object> toMap() {
+        if (name == null || name.isEmpty()) {
+            name = login;
+        }
+
+        Map<String, Object> values = new HashMap<>();
+        values.put("email", email);
+        values.put("login", login);
+        values.put("name", name);
+        values.put("birthday", birthday);
+
+        return values;
+    }
 }
