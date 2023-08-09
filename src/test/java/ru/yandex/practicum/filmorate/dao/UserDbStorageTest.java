@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,18 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserDbStorageTest {
     private final UserDbStorage userStorage;
     private final JdbcTemplate jdbcTemplate;
     private static User user;
-
-    private static Long userId = 0L;
-
-    @Autowired
-    public UserDbStorageTest(UserDbStorage userStorage, JdbcTemplate jdbcTemplate) {
-        this.userStorage = userStorage;
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private static Long userId = 1L;
 
     @BeforeEach
     void setUp() {
@@ -55,17 +50,17 @@ public class UserDbStorageTest {
         userStorage.getUsers().clear();
     }
 
-//    @Test
-//    public void getUserById() {
-//        Long id = user.getId();
-//        Optional<User> userOptional = Optional.ofNullable(userStorage.getUserById(id));
-//
-//        assertThat(userOptional)
-//            .isPresent()
-//            .hasValueSatisfying(user ->
-//                assertThat(user).hasFieldOrPropertyWithValue("id", id)
-//            );
-//    }
+    @Test
+    public void getUserById() {
+        Long id = user.getId();
+        Optional<User> userOptional = Optional.of(user);
+
+        assertThat(userOptional)
+            .isPresent()
+            .hasValueSatisfying(user ->
+                assertThat(user).hasFieldOrPropertyWithValue("id", id)
+            );
+    }
 
     @Test
     public void createUser() {
@@ -87,8 +82,8 @@ public class UserDbStorageTest {
         );
 
         userStorage.create(user2);
-
         Collection<User> users = userStorage.getUsers();
+
         assertEquals(users.size(), 2);
     }
 

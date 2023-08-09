@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
-import ru.yandex.practicum.filmorate.exception.RatingNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.MpaRating;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,13 +22,13 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Collection<Genre> getAllGenres() {
-        String sqlQuery = "select * from genres order by genre_id";
+        String sqlQuery = "select genre_id, name from genres order by genre_id";
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
     }
 
     @Override
     public Genre getGenreById(Integer id) {
-        String sqlQuery = "select * from genres where genre_id = ?";
+        String sqlQuery = "select genre_id, name from genres where genre_id = ?";
 
         List<Genre> genres = jdbcTemplate.query(sqlQuery, this::mapRowToGenre, id);
         if (genres.size() == 0) {

@@ -3,9 +3,7 @@ package ru.yandex.practicum.filmorate.storage.mpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.RatingNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 
 import java.sql.ResultSet;
@@ -22,13 +20,13 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Collection<MpaRating> getAllRatings() {
-        String sqlQuery = "select * from mpa_rating order by rating_id";
+        String sqlQuery = "select rating_id, name from mpa_rating order by rating_id";
         return jdbcTemplate.query(sqlQuery, this::mapRowToRating);
     }
 
     @Override
     public MpaRating getMpaById(Integer id) {
-        String sqlQuery = "select * from mpa_rating where rating_id = ?";
+        String sqlQuery = "select rating_id, name from mpa_rating where rating_id = ?";
 
         List<MpaRating> ratings = jdbcTemplate.query(sqlQuery, this::mapRowToRating, id);
         if (ratings.size() == 0) {

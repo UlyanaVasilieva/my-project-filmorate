@@ -53,7 +53,6 @@ public class UserService {
             return update(friend);
         }
 
-        friend = userStorage.getUserById(friendId);
         user.getFriendships().add(new Friendship(userId, friendId, false));
 
         return update(user);
@@ -93,26 +92,28 @@ public class UserService {
         initFriendsIfNull(user);
         initFriendsIfNull(otherUser);
 
-        List<User> commonFriends = new ArrayList<>();
+        List<User> userFriends = getUserFriendshipRequests(user);
+        List<User> otherUserFriends = getUserFriendshipRequests(otherUser);
 
-        List<User> userFriends = new ArrayList<>();
+        return fillListWithCommonFriends(userFriends, otherUserFriends);
+    }
+
+    private List<User> getUserFriendshipRequests(User user) {
+        List<User> userFriendshipRequests = new ArrayList<>();
+
         for (Friendship friendship : user.getFriendships()) {
-            if (Objects.equals(id, friendship.getRecipientId())) {
-                userFriends.add(getUserById(friendship.getSenderId()));
+            if (Objects.equals(user.getId(), friendship.getRecipientId())) {
+                userFriendshipRequests.add(getUserById(friendship.getSenderId()));
             } else {
-                userFriends.add(getUserById(friendship.getRecipientId()));
+                userFriendshipRequests.add(getUserById(friendship.getRecipientId()));
             }
         }
 
-        List<User> otherUserFriends = new ArrayList<>();
-        for (Friendship friendship : otherUser.getFriendships()) {
-            if (Objects.equals(id, friendship.getRecipientId())) {
-                otherUserFriends.add(getUserById(friendship.getSenderId()));
-            } else {
-                otherUserFriends.add(getUserById(friendship.getRecipientId()));
-            }
-        }
+        return userFriendshipRequests;
+    }
 
+    private List<User> fillListWithCommonFriends(List<User> userFriends, List<User> otherUserFriends) {
+        List<User> commonFriends = new ArrayList<>();
 
         for (User userFriend : userFriends) {
             if (otherUserFriends.contains(userFriend)) {

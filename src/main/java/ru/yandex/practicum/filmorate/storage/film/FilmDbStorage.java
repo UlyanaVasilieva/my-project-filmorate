@@ -1,11 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
@@ -19,7 +16,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Repository
-@Slf4j
 @Qualifier("filmDbStorage")
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -41,9 +37,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        if (getFilmById(film.getId()) == null) {
-            throw new FilmNotFoundException("Фильм с id " + film.getId() + " не найден.");
-        }
+        getFilmById(film.getId());
 
         String sqlQuery = "update films set " +
             "name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? " +
@@ -120,16 +114,10 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film removeLike(Integer filmId, Long userId) {
         Film film = this.getFilmById(filmId);
-
-        if (userId <= 0) {
-            throw new UserNotFoundException("Лайк данного пользователя не найден.");
-        }
-
         initLikesIfNull(film);
 
         if (film.getLikes().contains(userId)) {
             film.getLikes().remove(userId);
-
             String sqlQueryDeleteLikes = "delete from likes where user_id = ?";
             jdbcTemplate.update(sqlQueryDeleteLikes, userId);
         } else {
@@ -197,12 +185,7 @@ public class FilmDbStorage implements FilmStorage {
 
         return jdbcTemplate.query(
             sqlQueryGenre,
-            new ResultSetExtractor<HashSet<Genre>>() {
-                @Override
-                public HashSet<Genre> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                    return getFilmGenre(rs);
-                }
-            },
+            this::getFilmGenre,
             resultSet.getInt("film_id")
         );
     }
@@ -210,7 +193,7 @@ public class FilmDbStorage implements FilmStorage {
     private HashSet<Genre> getFilmGenre(ResultSet resultSet) throws SQLException {
         HashSet<Genre> genres = new HashSet<>();
 
-        while(resultSet.next()){
+        while (resultSet.next()) {
             Integer genreId = resultSet.getInt("genre_id");
             String genreName = resultSet.getString("name");
             genres.add(new Genre(genreId, genreName));
@@ -220,7 +203,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Set<Long> getAllFilmLikes(ResultSet resultSet) throws SQLException {
-        String sqlQueryLikes = "select * " +
+        String sqlQueryLikes = "select like_id, film_id, user_id " +
             "from likes " +
             "where film_id = ?";
         List<Long> usersWhoLiked = jdbcTemplate.query(

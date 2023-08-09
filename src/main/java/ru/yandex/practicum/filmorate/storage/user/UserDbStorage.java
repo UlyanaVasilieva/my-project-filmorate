@@ -37,9 +37,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        if (getUserById(user.getId()) == null) {
-            throw new UserNotFoundException("Пользователь с id " + user.getId() + " не найден.");
-        }
+        getUserById(user.getId());
 
         String sqlQuery = "update users set " +
             "email = ?, login = ?, name = ?, birthday = ?" +
@@ -61,13 +59,13 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getUsers() {
-        String sqlQuery = "select * from users";
+        String sqlQuery = "select user_id, email, login, name, birthday from users";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
     }
 
     @Override
     public User getUserById(Long id) {
-        String sqlQuery = "select * from users where user_id = ?";
+        String sqlQuery = "select user_id, email, login, name, birthday from users where user_id = ?";
         List<User> users = jdbcTemplate.query(sqlQuery, this::mapRowToUser, id);
         if (users.size() == 0) {
             throw new UserNotFoundException("Пользователь с id " + id + " не найден.");
@@ -102,7 +100,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     private List<Friendship> getAllUserFriendships(ResultSet resultSet) throws SQLException {
-        String sqlQueryFriends = "select * from user_friendships " +
+        String sqlQueryFriends = "select sender_id, recipient_id, is_friend from user_friendships " +
             "where sender_id = ? or (recipient_id = ? and is_friend = true)";
 
         return jdbcTemplate.query(
