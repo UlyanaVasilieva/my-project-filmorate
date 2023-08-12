@@ -88,7 +88,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean deleteFilmById(Integer id) {
         getFilmById(id);
 
         String sqlQueryDeleteLikes = "delete from likes where film_id = ?";

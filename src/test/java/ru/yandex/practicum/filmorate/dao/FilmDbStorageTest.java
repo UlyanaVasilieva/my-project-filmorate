@@ -51,7 +51,7 @@ public class FilmDbStorageTest {
     @AfterEach
     void afterEach() {
         for (Film storageFilm : filmDbStorage.getFilms()) {
-            filmDbStorage.delete(storageFilm.getId());
+            filmDbStorage.deleteFilmById(storageFilm.getId());
         }
         filmDbStorage.getFilms().clear();
     }

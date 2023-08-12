@@ -45,7 +45,7 @@ public class UserDbStorageTest {
     @AfterEach
     void afterEach() {
         for (User storageUser : userStorage.getUsers()) {
-            userStorage.delete(storageUser.getId());
+            userStorage.deleteUserById(storageUser.getId());
         }
         userStorage.getUsers().clear();
     }

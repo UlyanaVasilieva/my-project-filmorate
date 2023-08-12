@@ -2,10 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
@@ -28,5 +25,11 @@ public class MpaController {
     public MpaRating getRatingById(@PathVariable Integer id) {
         log.info("Пришел запрос на получение рейтинга с id " + id);
         return mpaStorage.getMpaById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteGenreById(@PathVariable Integer id) {
+        log.info("Пришел запрос на удаление рейтинга с id " + id);
+        return mpaStorage.delete(id);
     }
 }

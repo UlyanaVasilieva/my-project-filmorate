@@ -13,7 +13,7 @@ public interface FilmStorage {
 
     Film getFilmById(int id);
 
-    boolean delete(Integer id);
+    boolean deleteFilmById(Integer id);
 
     Film addLike(Integer filmId, Long userId);
 

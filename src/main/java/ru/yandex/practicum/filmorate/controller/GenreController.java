@@ -2,10 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
@@ -28,5 +25,11 @@ public class GenreController {
     public Genre getGenreById(@PathVariable Integer id) {
         log.info("Пришел запрос на получение жанра с id " + id);
         return genreStorage.getGenreById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteGenreById(@PathVariable Integer id) {
+        log.info("Пришел запрос на удаление жанра с id " + id);
+        return genreStorage.delete(id);
     }
 }

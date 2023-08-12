@@ -75,7 +75,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean deleteUserById(Long id) {
         getUserById(id);
 
         String sqlQueryDeleteLikes = "delete from likes where user_id = ?";
