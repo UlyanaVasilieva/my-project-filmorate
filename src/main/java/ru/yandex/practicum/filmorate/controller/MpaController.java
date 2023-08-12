@@ -28,7 +28,7 @@ public class MpaController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteGenreById(@PathVariable Integer id) {
+    public boolean deleteRatingById(@PathVariable Integer id) {
         log.info("Пришел запрос на удаление рейтинга с id " + id);
         return mpaStorage.delete(id);
     }
