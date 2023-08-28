@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -19,7 +19,7 @@ public class FilmService {
     private final FilmValidator validator;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, FilmValidator validator) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage, FilmValidator validator) {
         this.filmStorage = filmStorage;
         this.validator = validator;
     }
@@ -42,30 +42,16 @@ public class FilmService {
         return filmStorage.getFilmById(id);
     }
 
-    public Film addLike(Integer filmId, Long userId) {
-        Film film = filmStorage.getFilmById(filmId);
-        initLikesIfNull(film);
-        film.getLikes().add(userId);
+    public boolean deleteFilmById(int id) {
+        return filmStorage.deleteFilmById(id);
+    }
 
-        return film;
+    public Film addLike(Integer filmId, Long userId) {
+        return filmStorage.addLike(filmId, userId);
     }
 
     public Film removeLike(Integer filmId, Long userId) {
-        Film film = filmStorage.getFilmById(filmId);
-
-        if (userId <= 0) {
-            throw new UserNotFoundException("Лайк данного пользователя не найден.");
-        }
-
-        initLikesIfNull(film);
-
-        if (film.getLikes().contains(userId)) {
-            film.getLikes().remove(userId);
-        } else {
-            throw new UserNotFoundException("Лайк данного пользователя не найден.");
-        }
-
-        return film;
+        return filmStorage.removeLike(filmId, userId);
     }
 
     public List<Film> getMostPopularFilms(Integer count) {

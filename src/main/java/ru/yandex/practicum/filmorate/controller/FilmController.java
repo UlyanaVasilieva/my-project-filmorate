@@ -29,6 +29,12 @@ public class FilmController {
         return filmService.getFilmById(id);
     }
 
+    @DeleteMapping("/{id}")
+    public boolean deleteFilmById(@PathVariable Integer id) {
+        log.info("Пришел запрос на удаление фильма с id " + id);
+        return filmService.deleteFilmById(id);
+    }
+
     @PostMapping
     public Film createNewFilm(@Valid @RequestBody Film film) {
         log.info("Пришел запрос на создание фильма с названием " + film.getName());
