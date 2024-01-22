@@ -1,5 +1,35 @@
-# java-filmorate 
-### Сервис для оценки фильмов.
+# Movie rating Service
+This is my group project, the "skeleton" for which each of the participants did independently. Link to the full group project: https://github.com/MoriYandex/java-filmorate
+
+Users can rate a movie by liking or disliking it, find friends on the service and search for movies by genre or rating.
+
+This is RESTful API that works with the h2-database.
+
+## Content
+- [Stack](#stack)
+- [Usage](#usage)
+- [Sources](#sources)
+
+## Stack
+- Java 11
+- Spring Boot
+- Maven
+- h2
+- JdbcTemplate
+
+## Usage
+- Download this repository
+- Execute the command
+```sh
+mvn clean install
+```
+- Run the Jar file, where filename is the name of the executable file
+```sh
+java -jar filename.jar
+```
+
+## Sources
+Link to the full group project: https://github.com/MoriYandex/java-filmorate
 
 ### Схема БД и примеры запросов для основных операций:
 ![Схема базы данных.](src/main/resources/diagram.png)
